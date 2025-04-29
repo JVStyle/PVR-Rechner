@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css"/>
   <link rel="manifest" href="manifest.json"/>
   <meta name="theme-color" content="#0a9396"/>
-  <!-- Google Maps Places API (ersetze YOUR_API_KEY!) -->
+  <!-- Google Maps Places API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 </head>
 <body>
@@ -22,11 +22,10 @@
     <label>Standort (PLZ, Straße, Hausnr.):
       <input type="text" id="address" placeholder="z.B. 10115 Berlin" required>
     </label>
-    <!-- versteckte Felder für Geokoordinaten -->
     <input type="hidden" id="latitude">
     <input type="hidden" id="longitude">
 
-    <!-- 3. Anlagen-Daten -->
+    <!-- 3. Anlagendaten -->
     <label>Anlagengröße (kWp):
       <input type="number" id="anlagegroesse" required>
     </label>
@@ -34,7 +33,7 @@
       <input type="number" id="verbrauch" placeholder="z.B. 0 für <2012">
     </label>
 
-    <!-- 4. Marktvermarktung & EEG -->
+    <!-- 4. Vermarktung -->
     <label>Marktvermarktung:
       <select id="vermarktung">
         <option value="eeg">EEG-Einspeisung</option>
@@ -55,8 +54,8 @@
       </label>
     </div>
 
-    <!-- 5. Kosten & Förderung -->
-    <label>Förderung (€ einmalig):
+    <!-- 5. Kosten -->
+    <label>Förderung (€):
       <input type="number" id="foerderung" value="0">
     </label>
     <label>Investitionskosten (€):
@@ -94,7 +93,7 @@
 
   <div id="ergebnis"></div>
 
-  <!-- Fallback-PDF via html2pdf -->
+  <!-- Bibliothek für PDF-Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
   <script src="script.js"></script>
 </body>
