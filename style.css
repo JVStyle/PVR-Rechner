@@ -1,12 +1,13 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f1f5f9;
   margin: 1rem;
+  background: #faf5e6;
   color: #333;
 }
 h1 {
   text-align: center;
-  color: #005f73;
+  color: #0a9396;
+  margin-bottom: 1rem;
 }
 form label {
   display: block;
@@ -20,32 +21,30 @@ input, select, button {
 }
 button {
   background: #0a9396;
-  color: white;
+  color: #fff;
   border: none;
-  font-size: 1rem;
   margin-top: 1rem;
+  font-size: 1rem;
   cursor: pointer;
 }
-button:hover {
-  background: #005f73;
-}
+.hidden { display: none; }
 #ergebnis {
   margin-top: 1.5rem;
   padding: 1rem;
-  background: white;
-  border: 2px solid #0a9396;
+  border: 2px solid #8b5e3c;
+  background: #fffaf0;
 }
-#jahresTabelle {
+#jahresTabelle, #eegTabelle {
   width: 100%;
   border-collapse: collapse;
   margin-top: 0.5rem;
 }
-#jahresTabelle th,
-#jahresTabelle td {
+#jahresTabelle th, #jahresTabelle td,
+#eegTabelle th, #eegTabelle td {
   border: 1px solid #ccc;
   padding: 0.3rem;
   text-align: center;
 }
-#jahresTabelle th {
+#jahresTabelle th, #eegTabelle th {
   background-color: #e0f7fa;
 }
