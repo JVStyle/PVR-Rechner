@@ -136,13 +136,21 @@ async function berechnen() {
   out+=`</ul>`;
   document.getElementById('ergebnis').innerHTML = out;
 
-  // 7. PDF-Export via html2pdf.js
+  // 7. PDF-Export via html2pdf.js mit Sichtbarkeitsprüfung
+function exportPDF() {
   const element = document.getElementById('ergebnis');
+
+  if (!element || element.offsetHeight === 0) {
+    console.warn('PDF-Element ist leer oder nicht sichtbar.');
+    alert('PDF kann nicht generiert werden – Ergebnisse fehlen oder sind nicht sichtbar.');
+    return;
+  }
+
   html2pdf().set({
     margin:     10,
     filename:   `Urkunde_PV-Rentabilitaet_${new Date().toISOString().slice(0,10)}.pdf`,
-    image:      { type:'jpeg', quality:0.98 },
-    html2canvas:{ scale:2 },
-    jsPDF:      { unit:'pt', format:'a4', orientation:'portrait' }
+    image:      { type: 'jpeg', quality: 0.98 },
+    html2canvas:{ scale: 2, useCORS: true },
+    jsPDF:      { unit: 'pt', format: 'a4', orientation: 'portrait' }
   }).from(element).save();
 }
