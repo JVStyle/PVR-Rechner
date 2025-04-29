@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="style.css"/>
   <link rel="manifest" href="manifest.json"/>
   <meta name="theme-color" content="#0a9396"/>
+  <!-- Google Maps Places API (ersetze YOUR_API_KEY!) -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 </head>
 <body>
   <h1>PVR-Assistent</h1>
@@ -16,7 +18,15 @@
       <input type="month" id="startDate" required>
     </label>
 
-    <!-- 2. Anlagen-Daten -->
+    <!-- 2. Adresse statt Lat/Lon -->
+    <label>Standort (PLZ, Straße, Hausnr.):
+      <input type="text" id="address" placeholder="z.B. 10115 Berlin" required>
+    </label>
+    <!-- versteckte Felder für Geokoordinaten -->
+    <input type="hidden" id="latitude">
+    <input type="hidden" id="longitude">
+
+    <!-- 3. Anlagen-Daten -->
     <label>Anlagengröße (kWp):
       <input type="number" id="anlagegroesse" required>
     </label>
@@ -24,7 +34,7 @@
       <input type="number" id="verbrauch" placeholder="z.B. 0 für <2012">
     </label>
 
-    <!-- 3. Marktvermarktung & EEG -->
+    <!-- 4. Marktvermarktung & EEG -->
     <label>Marktvermarktung:
       <select id="vermarktung">
         <option value="eeg">EEG-Einspeisung</option>
@@ -45,23 +55,23 @@
       </label>
     </div>
 
-    <!-- 4. Kosten & Förderung -->
+    <!-- 5. Kosten & Förderung -->
     <label>Förderung (€ einmalig):
       <input type="number" id="foerderung" value="0">
     </label>
     <label>Investitionskosten (€):
       <input type="number" id="investition" required>
     </label>
-    <label>Wartungskosten (€ – alle 
+    <label>Wartungskosten (€):
+      <input type="number" id="wartung" value="0">
+      alle 
       <select id="wartungIntervall">
         <option value="2">2 Jahre</option>
         <option value="5" selected>5 Jahre</option>
       </select>
-      )
-      <input type="number" id="wartung" value="0">
     </label>
 
-    <!-- 5. Reinigung -->
+    <!-- 6. Reinigung -->
     <label>Reinigungseinheit:
       <select id="reinigungseinheit">
         <option value="kwp">€/kWp</option>
@@ -79,18 +89,13 @@
       </select>
     </label>
 
-    <!-- 6. Standort für API -->
-    <label>Standort (Lat, Lon):
-      <input type="text" id="latitude" placeholder="z.B. 52.52">
-      <input type="text" id="longitude" placeholder="z.B. 13.405">
-    </label>
-
     <button type="button" id="calcBtn">Berechnen & PDF erstellen</button>
   </form>
 
   <div id="ergebnis"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Fallback-PDF via html2pdf -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
