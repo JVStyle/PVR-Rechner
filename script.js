@@ -1,3 +1,82 @@
+// (Restliche Konstanten und Event-Handler bleiben unverändert)
+
+function berechnen() {
+  // ... (alle Eingaben und Berechnungen wie gehabt) …
+
+  // Beispiel: nach der Berechnung haben wir im Array `data`:
+  // data = [ {jahr:1, ertrag: 9500, wert: 250.00}, {jahr:2, ...}, … ]
+
+  // 1. Ergebnis-HTML mit Tabelle erzeugen
+  let html = `
+    <h2>Ergebnis nach 20 Jahren</h2>
+    <p>Erlöse: ${cum.toFixed(2)} €</p>
+    <p>Amortisation: ${amort? amort+' Jahre':'nicht erreicht'}</p>
+    <h3>Jährliche Übersicht</h3>
+    <table id="jahresTabelle">
+      <thead>
+        <tr><th>Jahr</th><th>Ertrag (kWh)</th><th>Ertrag (€)</th></tr>
+      </thead><tbody>
+  `;
+  data.forEach(d => {
+    html += `<tr>
+      <td>${d.jahr}</td>
+      <td>${d.ertrag}</td>
+      <td>${d.wert}</td>
+    </tr>`;
+  });
+  html += `</tbody></table>`;
+
+  // Reinigungseffekte wie gehabt anhängen
+  html += `
+    <h3>Reinigungseffekte</h3>
+    <ul>
+      ${cleaningLog.map(d =>
+        `<li>Jahr ${d.j}: Verlust ${d.loss.toFixed(0)} kWh → Mehrerlös ${(d.loss*tarif).toFixed(2)} € (Kosten ${d.cost.toFixed(2)} €)</li>`
+      ).join('')}
+    </ul>
+  `;
+
+  document.getElementById('ergebnis').innerHTML = html;
+
+  // 2. PDF-Export mit Jahreszahlen
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:'pt', format:'a4' });
+  doc.setDrawColor(139,94,60).setLineWidth(4).rect(20,20,572,800);
+  doc.setFont('Times','BoldItalic').setFontSize(24).text('Urkunde der PV-Rentabilität',100,80);
+  doc.setFont('Times','Roman').setFontSize(12);
+  doc.text(`Erstellt: ${new Date().toLocaleDateString()}`,40,110);
+  doc.text(`Anlage: ${anlage.toFixed(1)} kWp (Start: ${start.toLocaleDateString()})`,40,140);
+  doc.text(`Erlöse: ${cum.toFixed(2)} €`,40,170);
+  doc.text(`Amortisation: ${amort? amort+' Jahre':'nicht erreicht'}`,40,200);
+
+  // Jahresübersicht im PDF
+  let y = 240;
+  doc.text('Jahr | Ertrag (kWh) | Ertrag (€)',40,y);
+  data.forEach(d => {
+    y += 20;
+    doc.text(
+      `${d.jahr} | ${d.ertrag} | ${d.wert}`,
+      40, y
+    );
+    if (y > 740) { doc.addPage(); y = 40; }
+  });
+
+  // Reinigungstabelle im PDF (optional)
+  if (cleaningLog.length) {
+    if (y > 700) { doc.addPage(); y = 40; }
+    doc.text('Reinigungseffekte:',40,y+20);
+    cleaningLog.forEach(d => {
+      y += 20;
+      doc.text(
+        `J${d.j}: Verlust ${d.loss.toFixed(0)}kWh → Mehrerlös ${(d.loss*tarif).toFixed(2)}€ → Kosten ${d.cost.toFixed(2)}€`,
+        40, y
+      );
+      if (y > 740) { doc.addPage(); y = 40; }
+    });
+  }
+
+  doc.save('Urkunde_PV-Rentabilitaet.pdf');
+}
 function berechnen() {
   // Eingaben
   const anlagegroesse = parseFloat(document.getElementById('anlagegroesse').value);
