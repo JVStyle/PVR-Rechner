@@ -2,94 +2,70 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0a9396"/>
-  <link rel="manifest" href="manifest.json">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PVR-Assistent</title>
   <link rel="stylesheet" href="style.css">
-  <title>PVR Assistent</title>
+  <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
   <h1>PVR-Assistent</h1>
   <form id="pvForm">
-    <label>Anlagengröße (kWp):<input type="number" id="anlagegroesse" required></label>
-    <label>Eigenverbrauchsquote (%):<input type="number" id="verbrauch" required></label>
-    <label>Einspeisevergütung (ct/kWh):<input type="number" id="einspeiseverguetung" value="8.2" required></label>
-    <label>Strompreis Eigenverbrauch (ct/kWh):<input type="number" id="strompreis" value="30" required></label>
-    <label>Lage:
-      <select id="lage">
-        <option value="gut">Sehr gut</option>
-        <option value="mittel">Mittel</option>
-        <option value="schlecht">Schlecht</option>
+    <label>Inbetriebnahme (Jahr-Monat):
+      <input type="month" id="startDate" required>
+    </label>
+    <label>Anlagengröße (kWp):
+      <input type="number" id="anlagegroesse" required>
+    </label>
+    <label>Eigenverbrauchsquote (%):
+      <input type="number" id="verbrauch" required>
+    </label>
+    <label>Marktvermarktung:
+      <select id="vermarktung">
+        <option value="eeg">EEG-Einspeisung</option>
+        <option value="direct">Direktvermarktung</option>
       </select>
     </label>
-    <label>Förderung (€ einmalig):<input type="number" id="foerderung" value="0"></label>
-    <label>Investitionskosten (€):<input type="number" id="investition" required></label>
-    <label>Wartungskosten (€ pro Jahr):<input type="number" id="wartung" value="0"></label>
-    <label>Verschmutzungsgrad:
-      <select id="verschmutzung">
-        <option value="gering">Gering (5 %)</option>
-        <option value="mittel">Mittel (10 %)</option>
-        <option value="stark">Stark (20 %)</option>
-      </select>
+    <div id="eegInputs">
+      <label>EEG-Vergütung (ct/kWh):
+        <input type="number" id="eegTarif" step="0.01">
+      </label>
+    </div>
+    <div id="directInputs" class="hidden">
+      <label>Marktpreis (ct/kWh):
+        <input type="number" id="marketPrice" value="8.0" step="0.01">
+      </label>
+      <label>Marktprämie (ct/kWh):
+        <input type="number" id="marketPremium" value="3.0" step="0.01">
+      </label>
+    </div>
+    <label>Förderung (€ einmalig):
+      <input type="number" id="foerderung" value="0">
     </label>
-    <label>Reinigungsintervall (Jahre):<input type="number" id="reinigungIntervall" value="2" min="1"></label>
-    <label>Reinigungskosten Einheit:
+    <label>Investitionskosten (€):
+      <input type="number" id="investition" required>
+    </label>
+    <label>Wartungskosten (€ pro Jahr):
+      <input type="number" id="wartung" value="0">
+    </label>
+    <label>Reinigungseinheit:
       <select id="reinigungseinheit">
         <option value="kwp">€/kWp</option>
         <option value="qm">€/m²</option>
       </select>
     </label>
-    <label>Kosten pro Einheit (€):<input type="number" id="reinigungskosten" value="2" min="0"></label>
-    <label>Gesamtfläche (m²):<input type="number" id="flaeche" value="" placeholder="wird automatisch f = 7 m²/kWp"></label>
-    <button type="button" onclick="berechnen()">Berechnen + PDF</button>
+    <label>Kosten pro Einheit (€):
+      <input type="number" id="reinigungskosten" value="2" step="0.1">
+    </label>
+    <label>Fläche (m²) [optional]:
+      <input type="number" id="flaeche" placeholder="wird f=7 m²/kWp">
+    </label>
+    <button type="button" id="calcBtn">Berechnen & PDF erstellen</button>
   </form>
   <div id="ergebnis"></div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script>
-    function berechnen() {
-      const anlage = parseFloat(document.getElementById('anlagegroesse').value);
-      const verbrauch = parseFloat(document.getElementById('verbrauch').value)/100;
-      const einspeg = parseFloat(document.getElementById('einspeiseverguetung').value)/100;
-      const strom = parseFloat(document.getElementById('strompreis').value)/100;
-      const lage = document.getElementById('lage').value;
-      const förder = parseFloat(document.getElementById('foerderung').value);
-      const invest = parseFloat(document.getElementById('investition').value);
-      const wartung = parseFloat(document.getElementById('wartung').value);
-      const versch = document.getElementById('verschmutzung').value;
-      const interv = parseInt(document.getElementById('reinigungIntervall').value);
-      const einheit = document.getElementById('reinigungseinheit').value;
-      const kostenE = parseFloat(document.getElementById('reinigungskosten').value);
-      let fl = parseFloat(document.getElementById('flaeche').value);
-      if (!fl) fl = anlage * 7;
-      let schmutz = versch==='gering'?0.05: versch==='mittel'?0.10:0.20;
-      let specEr = lage==='gut'?1050: lage==='mittel'?900:750;
-      let cum = 0, amort=0, invRest = invest - förder;
-      let data = [];
-      let jah=20; let ertrag = anlage*specEr;
-      for (let y=1;y<=jah;y++){
-        ertrag *= 0.995; 
-        ertrag *= (1 - schmutz);
-        if (y%interv===0){
-          ertrag /= (1-schmutz);
-          ertrag *= 0.98;
-          let rc = (einheit==='kwp'?anlage*kostenE: fl*kostenE);
-          cum -= rc;
-        }
-        let ev = ertrag*verbrauch, es=ertrag-ev;
-        let wert = ev*strom + es*einspeg - wartung;
-        cum += wert;
-        if (!amort && cum >= invRest) amort=y;
-        data.push({y,ertrag:ertrag.toFixed(0),wert:wert.toFixed(2)});
-      }
-      document.getElementById('ergebnis').innerHTML=
-        `<h2>Einnahmen 20 Jahre: ${cum.toFixed(2)} €<br>Amortisation: ${amort||'nicht erreicht'}</h2>`;
-      const doc = new jspdf.jsPDF();
-      doc.text('PVR-Assistent Auswertung',20,20);
-      data.forEach((d,i)=>{ if(i&&i%25===0) doc.addPage(); doc.text(`J${d.y}:${d.wert}€`,20,40+i%25*8); });
-      doc.save('PVR_Assistent_Auswertung.pdf');
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
