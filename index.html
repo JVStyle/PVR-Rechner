@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PVR-Assistent</title>
   <link rel="stylesheet" href="style.css"/>
@@ -10,77 +10,86 @@
 </head>
 <body>
   <h1>PVR-Assistent</h1>
-
   <form id="pvForm">
+    <!-- 1. Inbetriebnahme -->
+    <label>Inbetriebnahme (Jahr-Monat):
+      <input type="month" id="startDate" required>
+    </label>
+
+    <!-- 2. Anlagen-Daten -->
     <label>Anlagengröße (kWp):
-      <input type="number" id="anlagegroesse" required />
+      <input type="number" id="anlagegroesse" required>
     </label>
-
     <label>Eigenverbrauchsquote (%):
-      <input type="number" id="verbrauch" required />
+      <input type="number" id="verbrauch" placeholder="z.B. 0 für <2012">
     </label>
 
-    <label>Einspeisevergütung (ct/kWh):
-      <input type="number" id="einspeiseverguetung" value="8.2" required />
-    </label>
-
-    <label>Eigenverbrauch Ersatzstrompreis (ct/kWh):
-      <input type="number" id="strompreis" value="30" required />
-    </label>
-
-    <label>Lage der Anlage:
-      <select id="lage">
-        <option value="gut">Sehr gut</option>
-        <option value="mittel">Mittel</option>
-        <option value="schlecht">Schlecht</option>
+    <!-- 3. Marktvermarktung & EEG -->
+    <label>Marktvermarktung:
+      <select id="vermarktung">
+        <option value="eeg">EEG-Einspeisung</option>
+        <option value="direct">Direktvermarktung</option>
       </select>
     </label>
+    <div id="eegInputs">
+      <label>EEG-Vergütung (ct/kWh):
+        <input type="number" id="eegTarif" step="0.01">
+      </label>
+    </div>
+    <div id="directInputs" class="hidden">
+      <label>Marktpreis (ct/kWh):
+        <input type="number" id="marketPrice" value="8.0" step="0.01">
+      </label>
+      <label>Marktprämie (ct/kWh):
+        <input type="number" id="marketPremium" value="3.0" step="0.01">
+      </label>
+    </div>
 
-    <label>Förderung (einmalig €):
-      <input type="number" id="foerderung" value="0" />
+    <!-- 4. Kosten & Förderung -->
+    <label>Förderung (€ einmalig):
+      <input type="number" id="foerderung" value="0">
     </label>
-
-    <label>Investitionskosten (€ gesamt):
-      <input type="number" id="investition" required />
+    <label>Investitionskosten (€):
+      <input type="number" id="investition" required>
     </label>
-
-    <label>Wartungskosten pro Jahr (€):
-      <input type="number" id="wartung" value="0" />
-    </label>
-
-    <label>Verschmutzungsgrad:
-      <select id="verschmutzung">
-        <option value="gering">Gering (5 % Verlust)</option>
-        <option value="mittel">Mittel (10 % Verlust)</option>
-        <option value="stark">Stark (20 % Verlust)</option>
+    <label>Wartungskosten (€ – alle 
+      <select id="wartungIntervall">
+        <option value="2">2 Jahre</option>
+        <option value="5" selected>5 Jahre</option>
       </select>
+      )
+      <input type="number" id="wartung" value="0">
     </label>
 
-    <label>Reinigungsintervall (Jahre):
-      <input type="number" id="reinigungIntervall" value="2" min="1" />
-    </label>
-
-    <label>Reinigungskosten Einheit:
+    <!-- 5. Reinigung -->
+    <label>Reinigungseinheit:
       <select id="reinigungseinheit">
         <option value="kwp">€/kWp</option>
         <option value="qm">€/m²</option>
       </select>
     </label>
-
     <label>Kosten pro Einheit (€):
-      <input type="number" id="reinigungskosten" value="2" min="0" />
+      <input type="number" id="reinigungskosten" value="2" step="0.1">
+    </label>
+    <label>Verschmutzungsgrad:
+      <select id="verschmutzung">
+        <option value="gering">Gering (5 %)</option>
+        <option value="mittel">Mittel (10 %)</option>
+        <option value="stark">Stark (20 %)</option>
+      </select>
     </label>
 
-    <label>Gesamtfläche der PV-Anlage (m²):
-      <input type="number" id="flaeche" placeholder="7 m² pro kWp" />
+    <!-- 6. Standort für API -->
+    <label>Standort (Lat, Lon):
+      <input type="text" id="latitude" placeholder="z.B. 52.52">
+      <input type="text" id="longitude" placeholder="z.B. 13.405">
     </label>
 
-    <button type="button" onclick="berechnen()">Berechnen + PDF erstellen</button>
+    <button type="button" id="calcBtn">Berechnen & PDF erstellen</button>
   </form>
 
   <div id="ergebnis"></div>
 
-  <!-- jsPDF für PDF-Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="script.js"></script>
 </body>
