@@ -73,7 +73,7 @@ async function berechnen() {
   const reK = +document.getElementById('reinigungskosten').value;
   let schRate = document.getElementById('verschmutzung').value;
   schRate = schRate === 'gering' ? 0.05 : schRate === 'mittel' ? 0.10 : 0.20;
-  let flaeche = +document.getElementById('flaeche').value;
+  let flaeche = +document.getElementById('flaeche')?.value;
   if (!flaeche) flaeche = anlage * 7;
 
   const lat = document.getElementById('latitude').value;
@@ -142,7 +142,7 @@ async function berechnen() {
   document.getElementById('ergebnis').innerHTML = out;
 }
 
-// 5. PDF-Export (außerhalb!)
+// 5. PDF-Export-Funktion
 function exportPDF() {
   const element = document.getElementById('ergebnis');
   if (!element || element.offsetHeight === 0) {
@@ -159,3 +159,6 @@ function exportPDF() {
     jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
   }).from(element).save();
 }
+
+// 6. Button zum PDF-Export verbinden
+document.getElementById('pdfBtn').addEventListener('click', exportPDF);
