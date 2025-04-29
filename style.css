@@ -1,1 +1,35 @@
-body { font-family: Arial, sans-serif; background: #f1f5f9; text-align: center; margin: 2rem; } h1 { color: #0a9396; }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 1rem;
+  background: #faf5e6; /* zarter Pergament-Ton */
+  color: #333;
+}
+h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-family: 'Cinzel', serif; /* calligraphischer Touch */
+}
+form label {
+  display: block;
+  margin: 0.5rem 0;
+}
+input, select, button {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.2rem;
+  box-sizing: border-box;
+}
+button {
+  background: #0a9396;
+  color: #fff;
+  border: none;
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+.hidden { display: none; }
+#ergebnis {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 3px double #8b5e3c; /* mittelalterlicher Rahmen */
+  background: #fffaf0;
+}
