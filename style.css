@@ -1,13 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:ital@0;1&display=swap');
+
 body {
   font-family: 'Segoe UI', sans-serif;
   margin: 1rem;
-  background: #faf5e6; /* zarter Pergament-Ton */
+  background: #faf5e6;
   color: #333;
 }
 h1 {
   text-align: center;
   margin-bottom: 1rem;
-  font-family: 'Cinzel', serif; /* calligraphischer Touch */
+  font-family: 'Cinzel', serif;
 }
 form label {
   display: block;
@@ -25,11 +27,15 @@ button {
   border: none;
   margin-top: 1rem;
   font-size: 1rem;
+  cursor: pointer;
 }
 .hidden { display: none; }
 #ergebnis {
   margin-top: 1.5rem;
   padding: 1rem;
-  border: 3px double #8b5e3c; /* mittelalterlicher Rahmen */
+  border: 3px double #8b5e3c;
   background: #fffaf0;
+}
+#ergebnis h2 {
+  margin-top: 0;
 }
